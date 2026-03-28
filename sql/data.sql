@@ -48,11 +48,11 @@ INSERT INTO book_genre (book_id, genre_id) VALUE
     ((SELECT book_id FROM books WHERE book_title="Howl's Moving Castle"),
     (SELECT genre_id FROM genres WHERE genre_name="Romance"));
 
+
 INSERT INTO users(username, email, date_of_birth) VALUE 
     ("hannah.haze","hannah@example.com","1985-04-18"),
     ("ryanverse","ryan@example.com","1992-09-27"),
     ("sophiecloud","sophie@example.com","1998-12-05");
-
 
 INSERT INTO reviews(book_id, user_id, ratings, reviews, date_created, last_modified) VALUE
     ((SELECT book_id FROM books WHERE book_title="Harry Potter and the Philosopher's Stone"),
@@ -67,4 +67,3 @@ INSERT INTO reviews(book_id, user_id, ratings, reviews, date_created, last_modif
     (SELECT user_id FROM users WHERE username="sophiecloud"),
     3.0, "Terrifying.","2026-02-28 13:00:00","2026-02-28 13:00:00"
     );
-
