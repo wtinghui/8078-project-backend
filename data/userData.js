@@ -13,6 +13,8 @@ async function createUser({username, password, email, dateOfBirth}){
             dateOfBirth
         ];
 
+        console.log(bindings)
+
         await connection.execute(query,bindings);
         await connection.commit();
     } catch(e){
@@ -24,17 +26,18 @@ async function createUser({username, password, email, dateOfBirth}){
     
 }
 
-async function updateUser({username, password, email}){
+async function updateUser(userId, {username, password, email}){
     const connection = await pool.getConnection();
     try{
         await connection.beginTransaction();
         const query=`UPDATE users SET 
+                        username = ?,
                         hashed_password = ?,
                         email = ?
-                        WHERE username = ?
+                        WHERE user_id = ?
                         `;
-        const bindings = [password, email, username];
-        await connection.execute(query, bindings)
+        const bindings = [username, password, email, userId];
+        await connection.execute(query, bindings);
         await connection.commit();
     } catch (e){
         await connection.rollback();
@@ -46,8 +49,8 @@ async function updateUser({username, password, email}){
 }
 
 async function deleteUser(userId){
+    const connection = await pool.getConnection();
     try{
-        const connection = await pool.getConnection();
         await connection.beginTransaction();
         await connection.execute(`DELETE FROM users WHERE user_id=?`,[userId]);
 

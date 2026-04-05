@@ -1,65 +1,89 @@
 const express = require('express');
 const router = express.Router();
 const userService = require('../services/userService');
+const jwt = require('jsonwebtoken');
+const authenticateWithJWT = require('../middlewares/authenticateWithJWT')
 
-router.post("/register", async (req, res)=>{
-    try{
+router.post("/register", async (req, res) => {
+    try {
         await userService.createUser(req.body);
         res.status(200).json({
-            "message":"New user created successfully"
+            "message": "New user created successfully"
         })
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).json({
-            "error":e.message
+            "error": e.message
         })
     }
 });
 
-router.post("/profile", async (req,res)=>{
-    try{
-        const userDetails = await userService.loginUser(req.body.email, req.body.password)
-        res.status(200).json({
-            "message": "Successful login",
-            "details": userDetails
-        })
-    } catch(e){
+router.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const userDetails = await userService.loginUser(email, password)
+        if (userDetails) {
+            const token = jwt.sign({
+                "userId": userDetails.user_id,
+                "userRole": userDetails.user_type
+            }, process.env.JWT_SECRET);
+            res.status(200).json({
+                "message": "Successful login",
+                token
+            })}
+    } catch(e) {
         res.status(500).json({
-            "error":e.message
+            "error": e.message
         })
     }
 })
 
-router.put("/profile", async (req,res) =>{
-    try{
-        await userService.updateUser(req.body);
+router.get("/profile", authenticateWithJWT, async (req, res) => {
+    try {
+        console.log(req.userId);
+        const userDetails  = await userService.getUserById(req.userId);
+        console.log(userDetails);
         res.status(200).json({
-            "message":"Details updated successfully"
+            userDetails
         })
-    } catch(e){
+    } catch (e) {
         res.status(500).json({
-            "error":e.message
+            "error": e.message
+        })
+    }
+})
+
+router.put("/profile", authenticateWithJWT, async (req, res) => {
+    try {
+        await userService.updateUser(req.userId, req.body);
+        res.status(200).json({
+            "message": "Account details updated successfully"
+        })
+    } catch (e) {
+        res.status(500).json({
+            "error": e.message
         })
     }
 });
 
-router.delete("/profile", async (req, res)=>{
-    try{
-        await userService.deleteUser(req.body.userId, req.body.password);
+router.delete("/profile", authenticateWithJWT, async (req, res) => {
+    try {
+        console.log(req.userId, req.body.password)
+        await userService.deleteUser(req.userId, req.body.password);
         res.status(200).json({
-            "message":"Account has been deleted"
+            "message": "Account has been deleted"
         })
-    } catch(e){
+    } catch (e) {
         res.status(500).json({
-            "error":e.message
+            "error": e.message
         })
     }
 });
 
-router.get("/login",(req,res)=>{
+router.get("/login", (req, res) => {
     res.json({
-        "message":"You are viewing the login page"
+        "message": "You are viewing the login page"
     })
 });
 
-module.exports=router
+module.exports = router;
