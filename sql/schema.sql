@@ -41,9 +41,12 @@ CREATE TABLE book_genre (
 
 CREATE TABLE users (
     user_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(45) NOT NULL,
-    email VARCHAR(255),
-    date_of_birth DATE
+    username VARCHAR(45) NOT NULL UNIQUE,
+    hashed_password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    date_of_birth DATE,
+    date_created DATE NOT NULL DEFAULT CURRENT_DATE(),
+    user_type VARCHAR(50) NOT NULL DEFAULT "user"
 );
 
 CREATE TABLE reviews (
@@ -52,10 +55,11 @@ CREATE TABLE reviews (
     user_id INT UNSIGNED,
     ratings FLOAT(2,1) NOT NULL,
     reviews TEXT NOT NULL,
-    date_created DATETIME NOT NULL,
+    date_created DATE NOT NULL DEFAULT CURRENT_DATE(),
     last_modified DATETIME NOT NULL,
 
     FOREIGN KEY (book_id) REFERENCES books(book_id)
     ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
+    ON DELETE CASCADE
 );

@@ -12,14 +12,16 @@ app.get('/',(req,res)=>{
     res.json({
         "message":"Test is successful"
     })
-})
+});
 
 
 //import in the routes
 const bookRoute = require('./routes/bookRoute');
+const userRoute = require('./routes/userRoute');
 
 //register the routes
 app.use("/books", bookRoute);
+app.use("/user", userRoute);
 
 //Start server
 app.listen(process.env.DB_PORT,()=>{

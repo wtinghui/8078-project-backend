@@ -1,4 +1,4 @@
-const bookData = require('../data/bookData');
+const bookData = require('../data/bookData.js');
 
 async function getAllBooks(){
     return await bookData.getAllBooks()
