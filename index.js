@@ -21,7 +21,7 @@ const userRoute = require('./routes/userRoute');
 
 //register the routes
 app.use("/books", bookRoute);
-app.use("/user", userRoute);
+app.use("/users", userRoute);
 
 //Start server
 app.listen(process.env.DB_PORT,()=>{

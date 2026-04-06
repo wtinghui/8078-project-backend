@@ -22,7 +22,7 @@ async function createUser({username, password, email, dateOfBirth}){
     })
 };
 
-async function updateUser (userId, {username, password, email}){
+async function updateUser (userId, {username, email, dateOfBirth}){
     const userDetails = await userData.getUserById(userId);
 
     const usernameInUse = await userData.getUserByUsername(username);
@@ -35,24 +35,22 @@ async function updateUser (userId, {username, password, email}){
         throw new Error ("Email already in use by an account.")
     };
 
-    const hashedPassword= await bcrypt.hash(password, 10);
     return await userData.updateUser(userId, {
         username,
-        "password":hashedPassword,
-        email
+        email,
+        dateOfBirth
     });
 }
 
 
 //how to verify password before deleting user?
-async function deleteUser (userId, password){
+async function deleteUser (userId){
     const userDetails = await userData.getUserById(userId);
-    console.log(userDetails);
 
-    const isPasswordCorrect = await bcrypt.compare(password, userDetails.hashed_password);
-    if (!isPasswordCorrect){
-        throw new Error('Password entered is not correct')
-    };
+    // const isPasswordCorrect = await bcrypt.compare(password, userDetails.hashed_password);
+    // if (!isPasswordCorrect){
+    //     throw new Error('Password entered is not correct')
+    // };
 
     return await userData.deleteUser(userId);
 };

@@ -26,17 +26,17 @@ async function createUser({username, password, email, dateOfBirth}){
     
 }
 
-async function updateUser(userId, {username, password, email}){
+async function updateUser(userId, {username, email, dateOfBirth}){
     const connection = await pool.getConnection();
     try{
         await connection.beginTransaction();
         const query=`UPDATE users SET 
                         username = ?,
-                        hashed_password = ?,
-                        email = ?
+                        email = ?,
+                        date_of_birth = ?
                         WHERE user_id = ?
                         `;
-        const bindings = [username, password, email, userId];
+        const bindings = [username, email, dateOfBirth, userId];
         await connection.execute(query, bindings);
         await connection.commit();
     } catch (e){

@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
     }
 })
 
-router.get("/profile", authenticateWithJWT, async (req, res) => {
+router.get("/me", authenticateWithJWT, async (req, res) => {
     try {
         console.log(req.userId);
         const userDetails  = await userService.getUserById(req.userId);
@@ -53,37 +53,33 @@ router.get("/profile", authenticateWithJWT, async (req, res) => {
     }
 })
 
-router.put("/profile", authenticateWithJWT, async (req, res) => {
+router.put("/me", authenticateWithJWT, async (req, res) => {
     try {
         await userService.updateUser(req.userId, req.body);
         res.status(200).json({
             "message": "Account details updated successfully"
         })
     } catch (e) {
+        console.log(e);
         res.status(500).json({
             "error": e.message
         })
     }
 });
 
-router.delete("/profile", authenticateWithJWT, async (req, res) => {
+router.delete("/me", authenticateWithJWT, async (req, res) => {
     try {
-        console.log(req.userId, req.body.password)
-        await userService.deleteUser(req.userId, req.body.password);
+        await userService.deleteUser(req.userId);
         res.status(200).json({
             "message": "Account has been deleted"
         })
     } catch (e) {
+        console.log(e);
         res.status(500).json({
             "error": e.message
         })
     }
 });
 
-router.get("/login", (req, res) => {
-    res.json({
-        "message": "You are viewing the login page"
-    })
-});
 
 module.exports = router;
