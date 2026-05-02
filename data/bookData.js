@@ -31,15 +31,5 @@ async function getBookDetails(bookId){
     return bookDetails;
 }
 
-async function getBookReviews(bookId){
-    const bookReviewsQuery = `SELECT review_id, username, ratings, reviews, TIMESTAMPDIFF(HOUR, last_modified, NOW()) AS duration FROM reviews 
-                            LEFT JOIN users ON reviews.user_id = users.user_id
-                            WHERE book_id =? `;
 
-    const [rows] = await pool.execute(bookReviewsQuery,[bookId]);
-    const bookReviews = rows[0];
-
-    return bookReviews;
-}
-
-module.exports={getAllBooks, getBookDetails, getBookReviews };
+module.exports={getAllBooks, getBookDetails };
